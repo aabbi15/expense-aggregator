@@ -6,7 +6,7 @@ const rows = samples
   .filter((row) => row.valid)
   .map(toSheetRow);
 
-console.log("Expense Aggregator — parsed demo rows\n");
+console.log("Expense Aggregator sample rows\n");
 console.table(
   rows.map((row) => ({
     Date: row.Date,
@@ -15,6 +15,5 @@ console.table(
     Merchant: row.Merchant,
     Category: row.Category,
     App: row.App,
-    Note: row.Fun_Note,
   })),
 );

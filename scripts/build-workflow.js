@@ -24,7 +24,7 @@ const workflow = {
   nodes: [
     {
       parameters: {
-        content: "## Expense Aggregator\nReads UPI alerts from Gmail (HDFC, SBI, ICICI, Axis, PhonePe, GPay, Paytm), parses amount / merchant / VPA, and appends a fun row to Google Sheets.\n\n**Test first:** click `When clicking Test` → Sample UPI Emails.\n**Go live:** connect Gmail + Sheets, then activate.",
+        content: "## Expense Aggregator\nReads UPI alerts from Gmail (HDFC, SBI, ICICI, Axis, PhonePe, GPay, Paytm), parses amount, merchant, and VPA, and appends a row to Google Sheets.\n\nManual test: When clicking Test, then Sample UPI Emails.\nBefore activating, attach the Gmail and Google Sheets credentials.",
         height: 280,
         width: 360,
         color: 4,
@@ -162,7 +162,6 @@ const workflow = {
             { id: "c-app", name: "App", value: "={{ $json.App }}", type: "string" },
             { id: "c-vpa", name: "VPA", value: "={{ $json.VPA }}", type: "string" },
             { id: "c-ref", name: "UPI_Ref", value: "={{ $json.UPI_Ref }}", type: "string" },
-            { id: "c-note", name: "Fun_Note", value: "={{ $json.Fun_Note }}", type: "string" },
             { id: "c-subject", name: "Subject", value: "={{ $json.Subject }}", type: "string" },
             { id: "c-mid", name: "MessageId", value: "={{ $json.MessageId }}", type: "string" },
           ],

@@ -1,13 +1,13 @@
 # Expense Aggregator
 
-A tiny n8n project that reads **UPI transaction emails** and drops them into a **Google Sheet** — Swiggy at 1am, the friend who finally paid you back, IRCTC tickets, Netflix.
+n8n workflow that reads UPI transaction emails and appends each one to a Google Sheet.
 
-It is the simple version of two public automations that already exist:
+Related workflows:
 
 - [UPI Spend Tracker](https://github.com/ARAVINDHRAJA123/UPI-Spend-Tracker) — HDFC UPI emails → Sheets + Telegram
 - [n8n expense tracker template #7644](https://n8n.io/workflows/7644-automated-expense-tracking-from-emails-and-telegram-with-gemini-ai-and-google-sheets/) — bank / GPay / PhonePe / Paytm emails → Gemini → Sheets
 
-This project keeps the fun part (auto-logging spend) and skips the AI budget engine. Regex does the parsing, so it runs on free n8n with no Gemini key.
+This workflow parses the email with regex and appends a row. It runs on free n8n, without a Gemini API key.
 
 ```
 Gmail UPI alert
@@ -17,25 +17,25 @@ Keep only bank / UPI mail
         │
         ▼
 JavaScript parser extracts
-  amount · merchant · VPA · debit/credit · category
+  amount, merchant, VPA, debit/credit, category
         │
         ▼
 Google Sheet gets a new row
 ```
 
-## What you get
+## Files
 
 | File | What it is |
 | --- | --- |
 | `n8n/expense-aggregator.json` | Import this into n8n |
 | `n8n/code/parse-upi-transaction.js` | The parser used by the Code node |
-| `src/parseUpiEmail.js` | Same parser, runnable locally |
+| `src/parseUpiEmail.js` | Same parser, used by the tests |
 | `sheets/Expense-Aggregator.template.csv` | Header + sample rows for Sheets |
-| `assets/workflow.png` | Canvas screenshot of the finished workflow |
+| `assets/workflow.png` | Screenshot of the workflow |
 
 Sheet columns:
 
-`Date · Month · Amount · Type · Merchant · Category · App · VPA · UPI_Ref · Fun_Note · Subject · MessageId`
+`Date, Month, Amount, Type, Merchant, Category, App, VPA, UPI_Ref, Subject, MessageId`
 
 ## 1. Try the parser without n8n
 
@@ -57,8 +57,8 @@ npm run demo
 
 Two paths land on the same parser:
 
-- **When clicking Test → Sample UPI Emails** — five fake UPI mails, no Gmail needed
-- **Gmail Trigger → Keep UPI Emails** — live inbox, once credentials are attached
+- **When clicking Test → Sample UPI Emails**: five sample emails
+- **Gmail Trigger → Keep UPI Emails**: polls the inbox after the Gmail credential is attached
 
 Then: **Parse UPI Transaction → Keep Valid Txns → Shape Sheet Row → Append Google Sheet**
 
@@ -82,10 +82,10 @@ Use the Gmail OAuth credential in n8n (easier than IMAP). The trigger already se
 
 Turn on email alerts in your UPI app / bank if they are off.
 
-## 5. Test, then go live
+## 5. Test the workflow
 
 1. Open **When clicking Test** and click **Test workflow**.
-2. Confirm five rows appear in the sheet (Swiggy, a friend credit, IRCTC, Uber, Netflix).
+2. Confirm the five sample rows show up on the Transactions tab.
 3. Attach Gmail, activate the workflow.
 
 ## Parser coverage
@@ -101,21 +101,12 @@ Built from the HDFC copy documented in UPI Spend Tracker, PhonePe receipt wordin
 | Paytm | `Paid ₹199 to Netflix via UPI` |
 | SBI / ICICI / Axis | `UPI/ZOMATO/zomato@icici/...` |
 
-Categories are keyword-based and a little cheeky: food, travel, shopping, bills, entertainment, transfers, money in.
+Categories come from merchant keywords: Food, Travel, Shopping, Bills, Entertainment, Transfer, Money in.
 
-If your bank uses a new sentence, add one regex in `src/parseUpiEmail.js` and paste the same change into the Code node (or rebuild with `node scripts/build-workflow.js`).
-
-## Push to your GitHub
-
-This folder is a git repo with an initial commit. Create an empty repo named `expense-aggregator` on GitHub (do not add a README), then:
-
-```bash
-git remote add origin https://github.com/YOUR_USERNAME/expense-aggregator.git
-git push -u origin main
-```
+If an alert does not match, add a regex in `src/parseUpiEmail.js`, then paste that change into the Code node or run `node scripts/build-workflow.js`.
 
 ## Safety
 
 - Do not put your real Gmail password in n8n. Use Google OAuth or an App Password.
-- The workflow stores merchant names and VPAs in your own sheet. Share that sheet only with people who should see your spend.
-- Promo mail is dropped. Failed parses never reach Sheets.
+- The sheet stores merchant names and VPAs. Share it only with people who should see the transactions.
+- The Gmail search excludes promotions. Keep Valid Txns skips a row when the amount is missing.

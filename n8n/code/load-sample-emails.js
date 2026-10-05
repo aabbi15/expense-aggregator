@@ -1,7 +1,5 @@
 /**
- * n8n Code node — Run Once for All Items
- * Feeds the parser with realistic Indian UPI emails so you can
- * test the workflow before connecting Gmail.
+ * Sample UPI Emails code node. Run once for all items.
  */
 return [
   {

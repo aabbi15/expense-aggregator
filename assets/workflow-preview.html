@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Expense Aggregator — n8n</title>
+  <title>Expense Aggregator</title>
   <style>
     :root {
       --bg: #f2f2f5;
@@ -104,9 +104,9 @@
 
         <div class="note">
           <h2>Expense Aggregator</h2>
-          <p>Reads UPI alerts from Gmail (HDFC, SBI, ICICI, Axis, PhonePe, GPay, Paytm), parses amount / merchant / VPA, and appends a fun row to Google Sheets.</p>
-          <p><b>Test first:</b> click When clicking Test → Sample UPI Emails.</p>
-          <p><b>Go live:</b> connect Gmail + Sheets, then activate.</p>
+          <p>Reads UPI alerts from Gmail (HDFC, SBI, ICICI, Axis, PhonePe, GPay, Paytm), parses amount, merchant, and VPA, and appends a row to Google Sheets.</p>
+          <p>Manual test: When clicking Test, then Sample UPI Emails.</p>
+          <p>Before activating, attach the Gmail and Google Sheets credentials.</p>
         </div>
 
         <div class="node" style="left:310px;top:92px;">
@@ -126,7 +126,7 @@
         </div>
         <div class="node" style="left:520px;top:366px;">
           <div class="icon" style="background:#ff6d5a">{ }</div>
-          <div><div class="name">Sample UPI Emails</div><div class="sub">Code · 5 demo receipts</div></div>
+          <div><div class="name">Sample UPI Emails</div><div class="sub">Code · 5 sample emails</div></div>
           <span class="port in"></span><span class="port out"></span>
         </div>
         <div class="node" style="left:730px;top:220px;">
@@ -141,7 +141,7 @@
         </div>
         <div class="node" style="left:1150px;top:220px;">
           <div class="icon" style="background:#4b4b54">≡</div>
-          <div><div class="name">Shape Sheet Row</div><div class="sub">Set · 12 columns</div></div>
+          <div><div class="name">Shape Sheet Row</div><div class="sub">Set · 11 columns</div></div>
           <span class="port in"></span><span class="port out"></span>
         </div>
         <div class="node" style="left:1360px;top:220px;">

@@ -1,4 +1,4 @@
-Date,Month,Amount,Type,Merchant,Category,App,VPA,UPI_Ref,Fun_Note,Subject,MessageId
-05-10-2026,October 2026,249,Debit,Swiggy,🍜 Food,HDFC,swiggy@yesbank,412345678901,Another food order. Future you says thanks... maybe.,You have done a UPI txn. Check details!,demo-hdfc-swiggy
-04-10-2026,October 2026,86,Credit,Motu Varun P,💸 Money in,HDFC,varun@okhdfcbank,412345678902,Money came in. Treat yourself but maybe not immediately. ₹86 landed.,INR 86.00 credited to your A/c,demo-hdfc-credit
-05-03-2026,March 2026,185,Debit,Irctc Uts,🛺 Travel,PhonePe,,T2503052030208914193200,Wheels up. Wallet down.,Paid Rs 185 to IRCTC UTS,demo-phonepe-irctc
+Date,Month,Amount,Type,Merchant,Category,App,VPA,UPI_Ref,Subject,MessageId
+05-10-2026,October 2026,249,Debit,Swiggy,Food,HDFC,swiggy@yesbank,412345678901,You have done a UPI txn. Check details!,demo-hdfc-swiggy
+04-10-2026,October 2026,86,Credit,Motu Varun P,Money in,HDFC,varun@okhdfcbank,412345678902,INR 86.00 credited to your A/c,demo-hdfc-credit
+05-03-2026,March 2026,185,Debit,Irctc Uts,Travel,PhonePe,,T2503052030208914193200,Paid Rs 185 to IRCTC UTS,demo-phonepe-irctc

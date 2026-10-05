@@ -1,13 +1,6 @@
 /**
- * Parse Indian UPI / bank alert emails into a single sheet row.
- *
- * Patterns are based on real alert formats used by:
- * - HDFC UPI emails (UPI Spend Tracker style debit/credit copy)
- * - PhonePe payment receipts
- * - Google Pay / Paytm confirmations
- * - SBI, ICICI, Axis UPI debit SMS/email alerts
- *
- * Works in Node tests and inside an n8n Code node (copy the same functions).
+ * Parse a UPI alert into sheet fields.
+ * Patterns cover HDFC, PhonePe, Google Pay, Paytm, SBI, ICICI, and Axis alerts.
  */
 
 const MONTHS = [
@@ -16,45 +9,12 @@ const MONTHS = [
 ];
 
 const CATEGORY_RULES = [
-  { category: "Food", emoji: "🍜", keywords: ["swiggy", "zomato", "dominos", "mcdonald", "kfc", "starbucks", "chai", "maggi", "blinkit", "zepto", "instamart", "eatsure", "box8"] },
-  { category: "Travel", emoji: "🛺", keywords: ["uber", "ola", "rapido", "irctc", "indigo", "airindia", "makemytrip", "redbus", "metro"] },
-  { category: "Shopping", emoji: "🛍️", keywords: ["amazon", "flipkart", "myntra", "ajio", "meesho", "nykaa"] },
-  { category: "Bills", emoji: "💡", keywords: ["jio", "airtel", "vi ", "vodafone", "electricity", "bescom", "adani", "gas", "bharat bill"] },
-  { category: "Entertainment", emoji: "🎬", keywords: ["netflix", "hotstar", "disney", "spotify", "bookmyshow", "pvr", "youtube"] },
-  { category: "Money in", emoji: "💸", keywords: [] },
+  { category: "Food", keywords: ["swiggy", "zomato", "dominos", "mcdonald", "kfc", "starbucks", "chai", "maggi", "blinkit", "zepto", "instamart", "eatsure", "box8"] },
+  { category: "Travel", keywords: ["uber", "ola", "rapido", "irctc", "indigo", "airindia", "makemytrip", "redbus", "metro"] },
+  { category: "Shopping", keywords: ["amazon", "flipkart", "myntra", "ajio", "meesho", "nykaa"] },
+  { category: "Bills", keywords: ["jio", "airtel", "vi ", "vodafone", "electricity", "bescom", "adani", "gas", "bharat bill"] },
+  { category: "Entertainment", keywords: ["netflix", "hotstar", "disney", "spotify", "bookmyshow", "pvr", "youtube"] },
 ];
-
-const FUN_NOTES = {
-  Food: [
-    "Another food order. Future you says thanks... maybe.",
-    "Stomach 1, savings 0.",
-    "The chai/ Maggi industrial complex claims another victim.",
-  ],
-  Travel: [
-    "Wheels up. Wallet down.",
-    "Auto uncle has been paid. The city keeps moving.",
-  ],
-  Shopping: [
-    "Retail therapy logged. The parcel is already on its way.",
-    "Cart emptied. Sheet updated.",
-  ],
-  Bills: [
-    "Adulting detected. Bill paid, wifi lives another month.",
-  ],
-  Entertainment: [
-    "Entertainment unlocked. Don't skip the intro.",
-  ],
-  Transfer: [
-    "Paisa moved. Friendship / rent / split-bill diplomacy continues.",
-  ],
-  "Money in": [
-    "Money came in. Treat yourself, but maybe not immediately.",
-    "Credit logged. The sheet is smiling.",
-  ],
-  Other: [
-    "A wild UPI appeared. Logged before it vanished.",
-  ],
-};
 
 function stripHtml(html) {
   return String(html || "")
@@ -231,22 +191,14 @@ function monthLabel(dateStr) {
 }
 
 function categorize(merchant, type) {
-  if (type === "Credit") return { category: "Money in", emoji: "💸" };
+  if (type === "Credit") return "Money in";
   const hay = merchant.toLowerCase();
   for (const rule of CATEGORY_RULES) {
     if (rule.keywords.some((keyword) => hay.includes(keyword))) {
-      return { category: rule.category, emoji: rule.emoji };
+      return rule.category;
     }
   }
-  return { category: "Transfer", emoji: "🔁" };
-}
-
-function funNote(category, amount, type) {
-  const pool = FUN_NOTES[category] || FUN_NOTES.Other;
-  const rupees = amount != null ? `₹${amount}` : "some paisa";
-  if (type === "Credit") return `${pool[0]} ${rupees} landed.`;
-  if (amount != null && amount >= 1000) return `${rupees} left the chat. Big ticket.`;
-  return `${pool[0]}`;
+  return "Transfer";
 }
 
 function parseUpiEmail(input = {}) {
@@ -265,7 +217,7 @@ function parseUpiEmail(input = {}) {
   const upiRef = extractUpiRef(combined);
   const merchant = extractMerchant(combined, vpa);
   const date = extractTxnDate(combined, input.date || input.internalDate);
-  const { category, emoji } = categorize(merchant, type);
+  const category = categorize(merchant, type);
   const isUpi = /upi|vpa|phonepe|google pay|gpay|paytm|ybl|okaxis|okhdfc|okicici/i.test(combined);
 
   return {
@@ -275,7 +227,6 @@ function parseUpiEmail(input = {}) {
     type,
     merchant,
     category,
-    emoji,
     app: source,
     vpa,
     upiRef,
@@ -284,7 +235,6 @@ function parseUpiEmail(input = {}) {
     messageId: input.id || input.messageId || "",
     snippet: text.slice(0, 240),
     isUpi,
-    funNote: funNote(category, amount, type),
     valid: Boolean(amount) && isUpi,
   };
 }
@@ -296,11 +246,10 @@ function toSheetRow(parsed) {
     Amount: parsed.amount,
     Type: parsed.type,
     Merchant: parsed.merchant,
-    Category: `${parsed.emoji} ${parsed.category}`,
+    Category: parsed.category,
     App: parsed.app,
     VPA: parsed.vpa,
     UPI_Ref: parsed.upiRef,
-    Fun_Note: parsed.funNote,
     Subject: parsed.subject,
     MessageId: parsed.messageId,
   };

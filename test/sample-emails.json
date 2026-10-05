@@ -7,7 +7,7 @@
     "text": "Dear Customer, Rs.249.00 has been debited from account **2732 to VPA swiggy@yesbank SWIGGY on 05-10-26. UPI Ref No 412345678901."
   },
   {
-    "id": "hdfc-credit-friend",
+    "id": "hdfc-credit",
     "from": "HDFC Bank Alerts <alerts@hdfcbank.net>",
     "subject": "INR 86.00 credited to your A/c",
     "date": "2026-10-04T19:20:00+05:30",
@@ -60,6 +60,6 @@
     "from": "Deals <deals@randomstore.com>",
     "subject": "50% off sneakers this weekend",
     "date": "2026-10-05T10:00:00+05:30",
-    "text": "Shop now and save big. No transaction here."
+    "text": "Shop the weekend sneaker sale. Use code WEEKEND50 at checkout."
   }
 ]

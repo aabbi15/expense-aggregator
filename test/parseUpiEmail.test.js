@@ -7,7 +7,7 @@ function sample(id) {
   return samples.find((email) => email.id === id);
 }
 
-test("parses HDFC Swiggy debit like the public UPI Spend Tracker emails", () => {
+test("parses an HDFC Swiggy debit", () => {
   const row = parseUpiEmail(sample("hdfc-debit-swiggy"));
   assert.equal(row.valid, true);
   assert.equal(row.amount, 249);
@@ -20,8 +20,8 @@ test("parses HDFC Swiggy debit like the public UPI Spend Tracker emails", () => 
   assert.equal(row.category, "Food");
 });
 
-test("parses HDFC credit from a friend VPA", () => {
-  const row = parseUpiEmail(sample("hdfc-credit-friend"));
+test("parses an HDFC credit", () => {
+  const row = parseUpiEmail(sample("hdfc-credit"));
   assert.equal(row.amount, 86);
   assert.equal(row.type, "Credit");
   assert.match(row.merchant, /Varun/i);
@@ -68,16 +68,15 @@ test("parses SBI, ICICI and Axis bank UPI alerts", () => {
   assert.equal(axis.amount, 1299);
   assert.equal(axis.app, "Axis");
   assert.equal(axis.category, "Shopping");
-  assert.match(axis.funNote, /left the chat/i);
 });
 
-test("ignores promo mail that is not a UPI transaction", () => {
+test("marks promo mail invalid", () => {
   const row = parseUpiEmail(sample("promo-ignored"));
   assert.equal(row.valid, false);
   assert.equal(row.amount, null);
 });
 
-test("maps parsed fields onto Google Sheet columns", () => {
+test("toSheetRow keys match the sheet columns", () => {
   const row = toSheetRow(parseUpiEmail(sample("hdfc-debit-swiggy")));
   assert.deepEqual(Object.keys(row), [
     "Date",
@@ -89,7 +88,6 @@ test("maps parsed fields onto Google Sheet columns", () => {
     "App",
     "VPA",
     "UPI_Ref",
-    "Fun_Note",
     "Subject",
     "MessageId",
   ]);

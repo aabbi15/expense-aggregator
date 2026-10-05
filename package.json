@@ -1,7 +1,7 @@
 {
   "name": "expense-aggregator",
   "version": "1.0.0",
-  "description": "Tiny n8n project that reads UPI transaction emails and logs them to Google Sheets.",
+  "description": "n8n workflow that reads UPI emails and appends rows to Google Sheets.",
   "type": "commonjs",
   "scripts": {
     "test": "node --test test/parseUpiEmail.test.js",

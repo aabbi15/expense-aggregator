@@ -1,6 +1,5 @@
 /**
- * n8n Code node — Run Once for All Items
- * Paste this entire file into the "Parse UPI Transaction" node.
+ * Parse UPI Transaction code node. Run once for all items.
  */
 const MONTHS = [
   "January", "February", "March", "April", "May", "June",
@@ -8,23 +7,12 @@ const MONTHS = [
 ];
 
 const CATEGORY_RULES = [
-  { category: "Food", emoji: "🍜", keywords: ["swiggy", "zomato", "dominos", "mcdonald", "kfc", "starbucks", "chai", "maggi", "blinkit", "zepto", "instamart", "eatsure", "box8"] },
-  { category: "Travel", emoji: "🛺", keywords: ["uber", "ola", "rapido", "irctc", "indigo", "airindia", "makemytrip", "redbus", "metro"] },
-  { category: "Shopping", emoji: "🛍️", keywords: ["amazon", "flipkart", "myntra", "ajio", "meesho", "nykaa"] },
-  { category: "Bills", emoji: "💡", keywords: ["jio", "airtel", "vi ", "vodafone", "electricity", "bescom", "adani", "gas", "bharat bill"] },
-  { category: "Entertainment", emoji: "🎬", keywords: ["netflix", "hotstar", "disney", "spotify", "bookmyshow", "pvr", "youtube"] },
+  { category: "Food", keywords: ["swiggy", "zomato", "dominos", "mcdonald", "kfc", "starbucks", "chai", "maggi", "blinkit", "zepto", "instamart", "eatsure", "box8"] },
+  { category: "Travel", keywords: ["uber", "ola", "rapido", "irctc", "indigo", "airindia", "makemytrip", "redbus", "metro"] },
+  { category: "Shopping", keywords: ["amazon", "flipkart", "myntra", "ajio", "meesho", "nykaa"] },
+  { category: "Bills", keywords: ["jio", "airtel", "vi ", "vodafone", "electricity", "bescom", "adani", "gas", "bharat bill"] },
+  { category: "Entertainment", keywords: ["netflix", "hotstar", "disney", "spotify", "bookmyshow", "pvr", "youtube"] },
 ];
-
-const FUN_NOTES = {
-  Food: "Another food order. Future you says thanks... maybe.",
-  Travel: "Wheels up. Wallet down.",
-  Shopping: "Retail therapy logged. The parcel is already on its way.",
-  Bills: "Adulting detected. Bill paid, wifi lives another month.",
-  Entertainment: "Entertainment unlocked. Don't skip the intro.",
-  Transfer: "Paisa moved. Friendship / rent / split-bill diplomacy continues.",
-  "Money in": "Money came in. Treat yourself, but maybe not immediately.",
-  Other: "A wild UPI appeared. Logged before it vanished.",
-};
 
 function stripHtml(html) {
   return String(html || "")
@@ -158,19 +146,12 @@ function monthLabel(dateStr) {
 }
 
 function categorize(merchant, type) {
-  if (type === "Credit") return { category: "Money in", emoji: "💸" };
+  if (type === "Credit") return "Money in";
   const hay = merchant.toLowerCase();
   for (const rule of CATEGORY_RULES) {
-    if (rule.keywords.some((keyword) => hay.includes(keyword))) return { category: rule.category, emoji: rule.emoji };
+    if (rule.keywords.some((keyword) => hay.includes(keyword))) return rule.category;
   }
-  return { category: "Transfer", emoji: "🔁" };
-}
-
-function funNote(category, amount, type) {
-  const rupees = amount != null ? `₹${amount}` : "some paisa";
-  if (type === "Credit") return `${FUN_NOTES["Money in"]} ${rupees} landed.`;
-  if (amount != null && amount >= 1000) return `${rupees} left the chat. Big ticket.`;
-  return FUN_NOTES[category] || FUN_NOTES.Other;
+  return "Transfer";
 }
 
 function parseUpiEmail(input) {
@@ -183,7 +164,7 @@ function parseUpiEmail(input) {
   const type = detectType(combined);
   const vpa = extractVpa(combined);
   const merchant = extractMerchant(combined, vpa);
-  const { category, emoji } = categorize(merchant, type);
+  const category = categorize(merchant, type);
   const date = extractTxnDate(combined, input.date || input.internalDate);
   const isUpi = /upi|vpa|phonepe|google pay|gpay|paytm|ybl|okaxis|okhdfc|okicici/i.test(combined);
 
@@ -194,7 +175,6 @@ function parseUpiEmail(input) {
     type,
     merchant,
     category,
-    emoji,
     app: detectSource({ from, subject, body: text }),
     vpa,
     upiRef: extractUpiRef(combined),
@@ -203,18 +183,16 @@ function parseUpiEmail(input) {
     messageId: input.id || input.messageId || "",
     snippet: text.slice(0, 240),
     isUpi,
-    funNote: funNote(category, amount, type),
     valid: Boolean(amount) && isUpi,
     Date: date,
     Month: monthLabel(date),
     Amount: amount,
     Type: type,
     Merchant: merchant,
-    Category: `${emoji} ${category}`,
+    Category: category,
     App: detectSource({ from, subject, body: text }),
     VPA: vpa,
     UPI_Ref: extractUpiRef(combined),
-    Fun_Note: funNote(category, amount, type),
     Subject: subject,
     MessageId: input.id || input.messageId || "",
   };
