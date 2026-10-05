@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Expense Aggregator — n8n</title>
+  <style>
+    :root {
+      --bg: #f2f2f5;
+      --panel: #ffffff;
+      --ink: #1f1f24;
+      --muted: #6f6f7a;
+      --line: #d8d8df;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { width: 1600px; height: 900px; overflow: hidden; }
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+    }
+    .app { display: flex; flex-direction: column; width: 1600px; height: 900px; }
+    .top {
+      height: 56px; background: var(--panel); border-bottom: 1px solid var(--line);
+      display: flex; align-items: center; padding: 0 18px; gap: 14px; z-index: 2;
+    }
+    .burger { width: 16px; height: 12px; display: flex; flex-direction: column; justify-content: space-between; }
+    .burger span { height: 2px; background: #444; border-radius: 2px; }
+    .title { font-weight: 650; font-size: 15px; }
+    .tag { font-size: 11px; color: var(--muted); border: 1px solid var(--line); border-radius: 999px; padding: 2px 8px; }
+    .spacer { flex: 1; }
+    .toggle { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--muted); }
+    .switch { width: 34px; height: 18px; background: #d8d8de; border-radius: 999px; position: relative; }
+    .switch i { position: absolute; top: 2px; left: 2px; width: 14px; height: 14px; background: #fff; border-radius: 50%; }
+    .btn { height: 32px; padding: 0 12px; border-radius: 6px; border: 1px solid var(--line); background: #fff; font-size: 13px; }
+    .btn.primary { background: #ff6d5a; color: #fff; border-color: #ff6d5a; font-weight: 600; }
+    .body { display: flex; flex: 1; min-height: 0; }
+    .rail {
+      width: 52px; background: #fff; border-right: 1px solid var(--line);
+      display: flex; flex-direction: column; align-items: center; padding-top: 16px; gap: 18px;
+    }
+    .plus { width: 32px; height: 32px; border-radius: 8px; background: #ff6d5a; color: #fff; display: grid; place-items: center; font-size: 22px; }
+    .dot { width: 16px; height: 16px; border: 2px solid #8d8d96; border-radius: 4px; }
+    .canvas {
+      position: relative; width: 1548px; height: 844px;
+      background-color: var(--bg);
+      background-image: radial-gradient(#ceced6 1.1px, transparent 1.1px);
+      background-size: 20px 20px;
+    }
+    svg.wires { position: absolute; inset: 0; width: 1548px; height: 844px; z-index: 1; }
+    .note {
+      position: absolute; left: 18px; top: 48px; width: 270px; height: 236px; z-index: 2;
+      background: #fff3b0; border: 1px solid #efd36a; border-radius: 10px;
+      box-shadow: 0 8px 18px rgba(0,0,0,.06); padding: 16px;
+    }
+    .note h2 { font-size: 17px; margin-bottom: 8px; }
+    .note p { font-size: 12px; line-height: 1.45; color: #3d3d32; margin-bottom: 8px; }
+    .node {
+      position: absolute; width: 188px; height: 74px; background: #fff; z-index: 2;
+      border: 1px solid #e3e3ea; border-radius: 10px;
+      box-shadow: 0 8px 18px rgba(26,26,31,.08);
+      display: flex; align-items: center; gap: 10px; padding: 0 12px;
+    }
+    .icon { width: 34px; height: 34px; border-radius: 9px; display: grid; place-items: center; color: #fff; font-size: 12px; font-weight: 800; flex-shrink: 0; }
+    .name { font-size: 12px; font-weight: 650; white-space: nowrap; }
+    .sub { font-size: 10.5px; color: var(--muted); margin-top: 2px; }
+    .port { position: absolute; width: 10px; height: 10px; border-radius: 50%; background: #fff; border: 2px solid #9a9aa6; top: 32px; }
+    .in { left: -6px; } .out { right: -6px; }
+    .zoom {
+      position: absolute; right: 16px; bottom: 14px; background: #fff; z-index: 3;
+      border: 1px solid var(--line); border-radius: 8px; display: flex; overflow: hidden;
+    }
+    .zoom span { width: 34px; height: 28px; display: grid; place-items: center; font-size: 14px; border-right: 1px solid var(--line); }
+    .zoom span:last-child { border: 0; font-size: 11px; width: 46px; color: var(--muted); }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="top">
+      <div class="burger"><span></span><span></span><span></span></div>
+      <div class="title">Expense Aggregator</div>
+      <span class="tag">Personal</span>
+      <div class="spacer"></div>
+      <div class="toggle">Inactive <div class="switch"><i></i></div></div>
+      <button class="btn">Share</button>
+      <button class="btn primary">Save</button>
+    </header>
+    <div class="body">
+      <aside class="rail">
+        <div class="plus">+</div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+      </aside>
+      <main class="canvas">
+        <svg class="wires" viewBox="0 0 1548 844">
+          <path d="M 498 129 C 508 129 508 129 520 129" fill="none" stroke="#9a9aa6" stroke-width="2"/>
+          <path d="M 708 129 C 724 129 714 257 730 257" fill="none" stroke="#9a9aa6" stroke-width="2"/>
+          <path d="M 498 403 C 508 403 508 403 520 403" fill="none" stroke="#9a9aa6" stroke-width="2"/>
+          <path d="M 708 403 C 724 403 714 257 730 257" fill="none" stroke="#9a9aa6" stroke-width="2"/>
+          <path d="M 918 257 C 928 257 928 257 940 257" fill="none" stroke="#9a9aa6" stroke-width="2"/>
+          <path d="M 1128 257 C 1138 257 1138 257 1150 257" fill="none" stroke="#9a9aa6" stroke-width="2"/>
+          <path d="M 1338 257 C 1348 257 1348 257 1360 257" fill="none" stroke="#9a9aa6" stroke-width="2"/>
+        </svg>
+
+        <div class="note">
+          <h2>Expense Aggregator</h2>
+          <p>Reads UPI alerts from Gmail (HDFC, SBI, ICICI, Axis, PhonePe, GPay, Paytm), parses amount / merchant / VPA, and appends a fun row to Google Sheets.</p>
+          <p><b>Test first:</b> click When clicking Test → Sample UPI Emails.</p>
+          <p><b>Go live:</b> connect Gmail + Sheets, then activate.</p>
+        </div>
+
+        <div class="node" style="left:310px;top:92px;">
+          <div class="icon" style="background:#ea4335">G</div>
+          <div><div class="name">Gmail Trigger</div><div class="sub">Polls UPI / bank alerts</div></div>
+          <span class="port out"></span>
+        </div>
+        <div class="node" style="left:520px;top:92px;">
+          <div class="icon" style="background:#1f845a">IF</div>
+          <div><div class="name">Keep UPI Emails</div><div class="sub">Filter · subject / from</div></div>
+          <span class="port in"></span><span class="port out"></span>
+        </div>
+        <div class="node" style="left:310px;top:366px;">
+          <div class="icon" style="background:#7a7a86">▶</div>
+          <div><div class="name">When clicking Test</div><div class="sub">Manual Trigger</div></div>
+          <span class="port out"></span>
+        </div>
+        <div class="node" style="left:520px;top:366px;">
+          <div class="icon" style="background:#ff6d5a">{ }</div>
+          <div><div class="name">Sample UPI Emails</div><div class="sub">Code · 5 demo receipts</div></div>
+          <span class="port in"></span><span class="port out"></span>
+        </div>
+        <div class="node" style="left:730px;top:220px;">
+          <div class="icon" style="background:#ff6d5a">{ }</div>
+          <div><div class="name">Parse UPI Transaction</div><div class="sub">Code · regex + categories</div></div>
+          <span class="port in"></span><span class="port out"></span>
+        </div>
+        <div class="node" style="left:940px;top:220px;">
+          <div class="icon" style="background:#1f845a">IF</div>
+          <div><div class="name">Keep Valid Txns</div><div class="sub">Filter · valid = true</div></div>
+          <span class="port in"></span><span class="port out"></span>
+        </div>
+        <div class="node" style="left:1150px;top:220px;">
+          <div class="icon" style="background:#4b4b54">≡</div>
+          <div><div class="name">Shape Sheet Row</div><div class="sub">Set · 12 columns</div></div>
+          <span class="port in"></span><span class="port out"></span>
+        </div>
+        <div class="node" style="left:1360px;top:220px;">
+          <div class="icon" style="background:#0f9d58">S</div>
+          <div><div class="name">Append Google Sheet</div><div class="sub">Google Sheets · append</div></div>
+          <span class="port in"></span>
+        </div>
+
+        <div class="zoom"><span>+</span><span>−</span><span>100%</span></div>
+      </main>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,65 @@
+[
+  {
+    "id": "hdfc-debit-swiggy",
+    "from": "HDFC Bank Alerts <alerts@hdfcbank.net>",
+    "subject": "You have done a UPI txn. Check details!",
+    "date": "2026-10-05T13:05:00+05:30",
+    "text": "Dear Customer, Rs.249.00 has been debited from account **2732 to VPA swiggy@yesbank SWIGGY on 05-10-26. UPI Ref No 412345678901."
+  },
+  {
+    "id": "hdfc-credit-friend",
+    "from": "HDFC Bank Alerts <alerts@hdfcbank.net>",
+    "subject": "INR 86.00 credited to your A/c",
+    "date": "2026-10-04T19:20:00+05:30",
+    "text": "Rs.86.00 is successfully credited to your account **2732 by VPA varun@okhdfcbank MOTU VARUN P on 04-10-26. UPI Ref 412345678902."
+  },
+  {
+    "id": "phonepe-irctc",
+    "from": "PhonePe <noreply@phonepe.com>",
+    "subject": "Paid Rs 185 to IRCTC UTS",
+    "date": "2026-03-05T20:30:00+05:30",
+    "text": "Paid To IRCTC UTS ₹ 185\nTxn. ID : T2503052030208914193200\nTxn. Status : Successful\nDebited From : XXXXXX9323 State Bank Of India\nBank Ref. No. : 224102048209"
+  },
+  {
+    "id": "gpay-uber",
+    "from": "Google Pay <noreply@google.com>",
+    "subject": "You paid ₹350 to Uber India",
+    "date": "2026-10-05T09:12:00+05:30",
+    "text": "You paid ₹350 to Uber India via UPI. UPI transaction ID: 412345678904. VPA uberindia@okicici"
+  },
+  {
+    "id": "paytm-netflix",
+    "from": "Paytm <no-reply@paytm.com>",
+    "subject": "Payment successful",
+    "date": "2026-10-01T08:00:00+05:30",
+    "text": "Paid ₹199 to Netflix via UPI. UPI Ref No 412345678905. VPA netflix@paytm"
+  },
+  {
+    "id": "sbi-debit",
+    "from": "SBI <alerts@sbi.co.in>",
+    "subject": "Transaction alert",
+    "date": "2026-10-05T11:00:00+05:30",
+    "text": "Your A/c XX1234 is debited by Rs.99.00 on 05-10-26 by UPI/JIO/jio@sbi/UPI Ref 412345678906"
+  },
+  {
+    "id": "icici-zomato",
+    "from": "ICICI Bank <alerts@icicibank.com>",
+    "subject": "ICICI Bank UPI transaction",
+    "date": "2026-10-05T21:40:00+05:30",
+    "text": "ICICI Bank Acct XX5678 is debited with Rs 420.00 on 05-Oct-26. Info: UPI/ZOMATO/zomato@icici/412345678907"
+  },
+  {
+    "id": "axis-amazon",
+    "from": "Axis Bank <alerts@axisbank.com>",
+    "subject": "UPI transaction alert",
+    "date": "2026-10-03T16:10:00+05:30",
+    "text": "INR 1,299.00 debited from A/c no. XX9012 on 03-10-2026. UPI/AMAZON/amazon@axisbank. UPI Ref No 412345678908"
+  },
+  {
+    "id": "promo-ignored",
+    "from": "Deals <deals@randomstore.com>",
+    "subject": "50% off sneakers this weekend",
+    "date": "2026-10-05T10:00:00+05:30",
+    "text": "Shop now and save big. No transaction here."
+  }
+]
